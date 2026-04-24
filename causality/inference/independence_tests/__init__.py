@@ -17,16 +17,7 @@ class RobustRegressionTest():
         self.lower = confidence_interval[0][x][0]
 
     def independent(self):
-        if self.coefficient > 0.:
-            if self.lower > 0.:
-                return False
-            else:
-                return True
-        else:
-            if self.upper < 0.:
-                return False
-            else:
-                return True
+        pass
 
 class ChiSquaredTest():
     def __init__(self, y, x, z, data, alpha):
@@ -56,10 +47,7 @@ class ChiSquaredTest():
         self.total_p = 1. - scipy.stats.chi2.cdf(self.total_chi2, self.total_dof)
 
     def independent(self):
-        if self.total_p < self.alpha:
-            return False
-        else:
-            return True
+        pass
 
 
 class MutualInformationTest():
@@ -78,25 +66,10 @@ class MutualInformationTest():
         self.dI = z*self.dI
 
     def independent(self):
-        if self.I - self.dI > 0.:
-            return False
-        else:
-            return True
+        pass
 
     def discrete_mutual_information(self, x, y, z, X):
-        n_z = Counter()
-        for zi in X[z].values:
-            n_z[tuple(zi)] += 1.
-        N = sum(n_z.values())
-        conditional_informations = {}
-        for zi, n_zi in n_z.items():
-            zi_subset = X.copy()
-            for col, val in zip(z,zi):
-                zi_subset = zi_subset[zi_subset[col] == val]
-            conditional_informations[zi] = self.max_likelihood_information(x,y,zi_subset)
-        I_ml = sum([(kz/N)*conditional_informations[zi][0] for zi, kz in n_z.items()])
-        dI_ml = np.sqrt(sum([((kz/N)*conditional_informations[zi][1])**2. for zi, kz in n_z.items()]))
-        return I_ml, dI_ml
+        pass
 
     def max_likelihood_information(self, x, y, X):
         """
@@ -105,17 +78,5 @@ class MutualInformationTest():
         and cardinality around 5.  Higher dimensions require lower cardinality.  For
         further refinment, I'll have to see if using a prior for I(x,y) helps.
         """
-        n_x = Counter()
-        n_y = Counter()
-        n_xy = Counter()
-        for xy in X[x+y].values:
-            xi = xy[:len(x)]
-            yi = xy[len(x):]
-            n_x[tuple(xi)] += 1.
-            n_y[tuple(yi)] += 1.
-            n_xy[(tuple(xi),tuple(yi))] += 1.
-        N = sum(n_x.values())
-        I_ml = sum([(k / N) * np.log(k * N / float(n_x[xi]*n_y[yi])) for (xi,yi), k in n_xy.items()])
-        K = sum([(k / N) * (np.log(k * N / float(n_x[xi]*n_y[yi])))**2. for (xi,yi), k in n_xy.items()])
-        return I_ml, np.sqrt((K - I_ml**2.)/(N + 1.))
+        pass
 
